@@ -7,7 +7,7 @@
 # June 2016
 #
 
-WEB_JAR=${WEB_JAR:="http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/0.20.0/otp-0.20.0-shaded.jar"}
+WEB_JAR=${WEB_JAR:="http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar"}
 
 OTP_DIR=${OTP_DIR:="../OpenTripPlanner"}
 OTP_JAR=${OTP_JAR:="$OTP_DIR/target/otp-*-shaded.jar"}
@@ -126,4 +126,3 @@ function misc()
 #function build_jar() { echo "TEST fix jar" }
 #function wget_jar()  { echo "TEST wget jar" }
 #function fix_config_jar() { echo "TEST fix jar" }
-
