@@ -79,6 +79,30 @@ bin/load_all -ini config/app.ini
 bin/otp_build --no_tests prod
 ```
 
+### these are the defaults
+```
+DEFAULT_SUBWAY_ACCESS_TIME = 2.0
+htmlAnnotations = false
+maxHtmlAnnotationsPerFile = 1000
+transit = true
+useTransfersTxt = false
+parentStopLinking = false
+stationTransfers = false
+subwayAccessTime = 2.0
+streets = true
+embedRouterConfig = true
+areaVisibility = false
+matchBusRoutesToStreets = false
+fetchElevationUS = true
+elevationBucket = [AWS S3 bucket configuration: bucketName=ned13 accessKey=AKIAI5DKXIBQAUDA2S3A secretKey=***]
+fareServiceFactory = DefaultFareServiceFactory
+customNamer = org.opentripplanner.graph_builder.module.osm.PortlandCustomNamer@7a36aefa
+staticBikeRental = false
+staticParkAndRide = true
+staticBikeParkAndRide = false
+maxInterlineDistance = 200
+```
+
 ## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
 
 
