@@ -36,6 +36,20 @@ deactivate
 virtualenv .
 ```
 
+## set up the gtfsdb and utils repositories
+
+start inside the loader folder
+
+```
+. bin/activate
+cd ../gtfsdb
+buildout install prod postgresql
+
+cd ../utils
+buildout install prod
+
+cd ../loader
+```
 ## load requirements
 
 ### install osmosis
@@ -49,6 +63,8 @@ tar xvfz osmosis-latest.tgz ; rm osmosis-latest.tgz
 chmod a+x bin/osmosis ; cp bin/osmosis /usr/local/bin/
 ```
 
+
+
 ### load some GTFS and OSM files
 ```
 bin/load_data -ini config/app.ini
@@ -57,6 +73,9 @@ bin/load_data -ini config/app.ini
 bin/load_all -ini config/app.ini
 ```
 
+---
+
+**original documentation below. this is untested! -doug**
 
 run:
   1. bin/test ... this cmd will run loader's unit tests (see: http://docs.zope.org/zope.testrunner/#some-useful-command-line-options-to-get-you-started)
