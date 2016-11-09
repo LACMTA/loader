@@ -75,6 +75,10 @@ bin/load_all -ini config/app.ini
 
 ## Generate the Graph.obj to introduce to the shaded otp.jar file
 
+```
+bin/otp_build --no_tests prod
+```
+
 ## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
 
 
