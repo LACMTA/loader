@@ -91,3 +91,5 @@ nohup.out
 gtfsdb.db.bkup
 x
 .pydevproject
+/README.txt
+/pip-selfcheck.json
