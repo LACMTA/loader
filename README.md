@@ -73,6 +73,33 @@ bin/load_data -ini config/app.ini
 bin/load_all -ini config/app.ini
 ```
 
+## Generate the Graph.obj to introduce to the shaded otp.jar file
+
+## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
+
+
+
+## rebuild the graph when new GTFS data arrives
+
+```
+java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
+    --build ott/loader/otp/graph/prod \
+    --router prod \
+    --basePath ott/loader/otp
+```
+
+## run the server as a daemon
+
+```
+java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
+    --graphs ott/loader/otp/graph \
+    --basePath ott/loader/otp \
+    --server \
+    --insecure \
+    --router lax \
+    --autoScan \
+    --autoReload
+```
 ---
 
 **original documentation below. this is untested! -doug**
