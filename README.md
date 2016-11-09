@@ -11,16 +11,23 @@ The loader project contains multiple utilities to load GTFS, OSM and OTP data in
   1. [solr](ott/loader/solr/README.md), which pulls data from 
 
 ## install
-  1. install python 2.7 and git
-  2. `git clone https://github.com/OpenTransitTools/gtfsdb.git`
-  3. `git clone https://github.com/OpenTransitTools/utils.git`
-  1. `git clone https://github.com/OpenTransitTools/loader.git`
-  1. `cd loader`
-  2. `virtualenv . ; . bin/activate`
-  2. `pip install -r requirements.txt`
-  3. `easy_install zc.recipe.egg`	# but pip couldn't install the zope stuff. not sure why
-  4. `easy_install zc.recipe.testrunner`
-  1. `buildout install prod`
+install python 2.7 and git. then:
+
+```
+# clone three repositories
+git clone https://github.com/OpenTransitTools/gtfsdb.git
+git clone https://github.com/OpenTransitTools/utils.git
+git clone https://github.com/OpenTransitTools/loader.git
+cd loader
+# set up virtualenv, activate
+virtualenv .
+. bin/activate
+pip install -r requirements.txt
+# pip couldn't install the zope stuff. not sure why
+easy_install zc.recipe.egg
+easy_install zc.recipe.testrunner
+buildout install prod
+```
 
 I needed to rerun virtualenv after running buildout. Unsure why. 
 
@@ -31,27 +38,24 @@ virtualenv .
 
 ## load requirements
 
-### osmosis
+### install osmosis
 
-Osmosis is a command line Java application for processing OSM data.
+Osmosis is a command line Java application for processing OSM data. You may install osmosis with homebrew on OSX, use the install script in `ott/loader/osm/osmosis/` or do this:
 
-1. `wget http://bretth.dev.openstreetmap.org/osmosis-build/osmosis-latest.tgz`
-2. `mkdir osmosis ; mv osmosis-latest.tgz osmosis/ ; cd osmosis/`
-3. tar xvfz osmosis-latest.tgz ; rm osmosis-latest.tgz
-4. chmod a+x bin/osmosis ; cp bin/osmosis /usr/local/bin/
-
-or on OSX: `brew install osmosis`
-
-1. cd ott/loader/osm/osmosis/ ; bash install.sh
+```
+wget http://bretth.dev.openstreetmap.org/osmosis-build/osmosis-latest.tgz
+mkdir osmosis ; mv osmosis-latest.tgz osmosis/ ; cd osmosis/
+tar xvfz osmosis-latest.tgz ; rm osmosis-latest.tgz
+chmod a+x bin/osmosis ; cp bin/osmosis /usr/local/bin/
+```
 
 ### load some GTFS and OSM files
+```
+bin/load_data -ini config/app.ini
 
-1. `bin/load_data -ini config/app.ini`
-
-### put it in the database
-
-2. `bin/load_all -ini config/app.ini`
-
+# put it in the database
+bin/load_all -ini config/app.ini
+```
 
 
 run:
