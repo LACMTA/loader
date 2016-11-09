@@ -47,7 +47,10 @@ or on OSX: `brew install osmosis`
 ### load some GTFS and OSM files
 
 1. `bin/load_data -ini config/app.ini`
-2. 
+
+### put it in the database
+
+2. `bin/load_all -ini config/app.ini`
 
 
 
