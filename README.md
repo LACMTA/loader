@@ -8,7 +8,7 @@ The loader project contains multiple utilities to load GTFS, OSM and OTP data in
   1. [gtfsdb](ott/loader/gtfsdb/README.md), which loads gtfs files into GTFSDB
   1. [osm](ott/loader/osm/README.md), which downloads OSM .pdb files, and futher can extract .osm data via OSMOSIS
   1. [otp](ott/loader/otp/README.md), which builds graphs (Graph.obj) databases for [OpenTripPlanner](http://opentripplanner.org)
-  1. [solr](ott/loader/solr/README.md), which pulls data from 
+  1. [solr](ott/loader/solr/README.md), which pulls data from
 
 ## install
 install python 2.7 and git. then:
@@ -29,7 +29,7 @@ easy_install zc.recipe.testrunner
 buildout install prod
 ```
 
-I needed to rerun virtualenv after running buildout. Unsure why. 
+I needed to rerun virtualenv after running buildout. Unsure why.
 
 ```
 deactivate
@@ -37,6 +37,13 @@ virtualenv .
 ```
 
 ## set up the gtfsdb and utils repositories
+
+Make sure that you have PostgreSQL (>v9.1) installed locally with the PostGIS extensions (>v2.2).
+Once installed you may open the `ott` table and run this query:
+
+`CREATE EXTENSION postgis;`
+
+## Load Data
 
 start inside the loader folder
 
@@ -101,7 +108,27 @@ staticBikeRental = false
 staticParkAndRide = true
 staticBikeParkAndRide = false
 maxInterlineDistance = 200
+
+...
+
+11:52:43.538 INFO (GraphBuilder.java:174) Graph building took 30.7 minutes.
 ```
+
+copy the Graph.obj to to the server:
+
+```
+scp ott/loader/otp/graph/prod/Graph.obj 52.11.203.105:/tmp/
+
+
+# then on the server
+sudo chown otp:otp /tmp/Graph.obj
+sudo chmod 664 /tmp/Graph.obj
+sudo cp /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj_works
+sudo mv /tmp/Graph.obj /home/otp^Craphs/lax/
+sudo  /etc/init.d/opentripplanner restart
+```
+
+## Load the places into Pelias
 
 ## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
 
@@ -136,3 +163,8 @@ run:
   1. bin/test ... this cmd will run loader's unit tests (see: http://docs.zope.org/zope.testrunner/#some-useful-command-line-options-to-get-you-started)
   1. see individual project README's above to see different app runs
   1. and check out the bin/ generated after buildout is run (those binaries are created via buildout & setup.py)
+
+
+
+
+ psql -f ott/loader/gtfsdb/create_postgis_db.psql ott -f ott/loader/gtfsdb/create_postgis_db.psql
