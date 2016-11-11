@@ -9,6 +9,9 @@ from ott.utils.cache_base import CacheBase
 from ott.loader.gtfs.gtfs_cache import GtfsCache
 from gtfsdb.api import database_load
 
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__file__)
+
 
 class GtfsdbLoader(CacheBase):
     """ load GTFS data into a gtfsdb
@@ -21,7 +24,7 @@ class GtfsdbLoader(CacheBase):
         super(GtfsdbLoader, self).__init__(section='gtfs')
 
         self.feeds   = self.config.get_json('feeds', section='gtfs')
-        self.db_url  = self.config.get('url', section='db', def_val='postgresql+psycopg2://ott@127.0.0.1:5432/ott')
+        self.db_url  = self.config.get('url', section='db', def_val='postgresql+psycopg2://127.0.0.1:5432/ott')
         self.is_geospatial = self.config.get_bool('is_geospatial', section='db')
 
     def check_db(self, force_update=False):
@@ -39,6 +42,7 @@ class GtfsdbLoader(CacheBase):
         ''' insert feeds into configured db (see config/app.ini)
         '''
         #import pdb; pdb.set_trace()
+        print("load_feeds")
         ret_val = True
         err_ext = "-error_loading"
 
