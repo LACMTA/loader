@@ -130,11 +130,23 @@ sudo  /etc/init.d/opentripplanner restart
 
 ## Load the places into Pelias
 
+```
+scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
+
+# then on the server
+
+```
+
 ## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
 
+## verify that you have the v1.0
 
+```
+wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
+  -O ott/loader/otp/graph/prod/otp.jar
+```
 
-## rebuild the graph when new GTFS data arrives
+## rebuild the graph GTFS data arrives
 
 ```
 java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
@@ -155,6 +167,13 @@ java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
     --autoScan \
     --autoReload
 ```
+
+# get the OTP version,
+
+```
+java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar  -V
+```
+
 ---
 
 **original documentation below. this is untested! -doug**
