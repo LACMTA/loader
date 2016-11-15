@@ -78,4 +78,4 @@ class GtfsdbLoader(CacheBase):
         '''
         #import pdb; pdb.set_trace()
         db = GtfsdbLoader()
-        db.check_db(force_update=object_utils.is_force_update())
+        db.check_db(force_update=True)
