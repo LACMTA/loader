@@ -124,7 +124,7 @@ scp ott/loader/otp/graph/prod/Graph.obj 52.11.203.105:/tmp/
 sudo chown otp:otp /tmp/Graph.obj
 sudo chmod 664 /tmp/Graph.obj
 sudo cp /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj_works
-sudo mv /tmp/Graph.obj /home/otp^Craphs/lax/
+sudo mv /tmp/Graph.obj /home/otp/graphs/lax/
 sudo  /etc/init.d/opentripplanner restart
 ```
 
@@ -136,8 +136,6 @@ scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
 # then on the server
 
 ```
-
-## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
 
 ## verify that you have the v1.0
 
@@ -155,7 +153,7 @@ java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
     --basePath ott/loader/otp
 ```
 
-## run the server as a daemon
+## run the server locally as a daemon
 
 ```
 java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
@@ -167,6 +165,9 @@ java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
     --autoScan \
     --autoReload
 ```
+
+## *... this is as far as I've gotten using Purcell's loader. The next steps are approximate!*
+
 
 # get the OTP version,
 
