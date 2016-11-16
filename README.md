@@ -20,7 +20,7 @@ git clone https://github.com/OpenTransitTools/utils.git
 git clone https://github.com/LACMTA/loader.git
 cd loader
 
-# set up virtualenv, activate
+# set up virtualenv but DON'T ACTIVATE
 virtualenv .
 
 bin/pip install zc.buildout
@@ -43,7 +43,7 @@ CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 ```
 
-## Load Data
+## Set up the OTT projects gtfsdb and utils before loading data
 
 start inside the loader folder
 
