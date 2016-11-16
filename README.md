@@ -17,38 +17,37 @@ install python 2.7 and git. then:
 # clone three repositories
 git clone https://github.com/OpenTransitTools/gtfsdb.git
 git clone https://github.com/OpenTransitTools/utils.git
-git clone https://github.com/OpenTransitTools/loader.git
+git clone https://github.com/LACMTA/loader.git
 cd loader
+
 # set up virtualenv, activate
 virtualenv .
-. bin/activate
-pip install -r requirements.txt
-# pip couldn't install the zope stuff. not sure why
-easy_install zc.recipe.egg
-easy_install zc.recipe.testrunner
+
+bin/pip install zc.buildout
 buildout install prod
-```
-
-I needed to rerun virtualenv after running buildout. Unsure why.
-
-```
-deactivate
-virtualenv .
 ```
 
 ## set up the gtfsdb and utils repositories
 
 Make sure that you have PostgreSQL (>v9.1) installed locally with the PostGIS extensions (>v2.2).
-Once installed you may open the `ott` table and run this query:
 
-`CREATE EXTENSION postgis;`
+Create the `ott` table and an ott user:
+
+```
+CREATE DATABASE ott;
+CREATE USER ott WITH PASSWORD 'ott';
+GRANT ALL PRIVILEGES ON DATABASE "ott" to ott;
+
+# \connect ott;
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
+```
 
 ## Load Data
 
 start inside the loader folder
 
 ```
-. bin/activate
 cd ../gtfsdb
 buildout install prod postgresql
 
@@ -64,13 +63,16 @@ cd ../loader
 Osmosis is a command line Java application for processing OSM data. You may install osmosis with homebrew on OSX, use the install script in `ott/loader/osm/osmosis/` or do this:
 
 ```
-wget http://bretth.dev.openstreetmap.org/osmosis-build/osmosis-latest.tgz
-mkdir osmosis ; mv osmosis-latest.tgz osmosis/ ; cd osmosis/
-tar xvfz osmosis-latest.tgz ; rm osmosis-latest.tgz
-chmod a+x bin/osmosis ; cp bin/osmosis /usr/local/bin/
+cd ../loader
+cd ott/loader/osm/osmosis/
+bash install.sh
+
+# you should get a message that ends with
+# "Full usage details are available at: http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage"
+
+# back to the loader directory
+cd ../../../../
 ```
-
-
 
 ### load some GTFS and OSM files
 ```
