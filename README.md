@@ -74,7 +74,7 @@ bash install.sh
 cd ../../../../
 ```
 
-### load some GTFS and OSM files
+### load the GTFS and OSM files listed in config/app.ini
 ```
 bin/load_data -ini config/app.ini
 
