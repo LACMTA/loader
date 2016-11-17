@@ -8,7 +8,7 @@ The loader project contains multiple utilities to load GTFS, OSM and OTP data in
   1. [gtfsdb](ott/loader/gtfsdb/README.md), which loads gtfs files into GTFSDB
   1. [osm](ott/loader/osm/README.md), which downloads OSM .pdb files, and futher can extract .osm data via OSMOSIS
   1. [otp](ott/loader/otp/README.md), which builds graphs (Graph.obj) databases for [OpenTripPlanner](http://opentripplanner.org)
-  1. [solr](ott/loader/solr/README.md), which pulls data from
+  1. [solr](ott/loader/solr/README.md), which pulls geocoder data from the PostgreSQL database
 
 ## install
 install python 2.7 and git. then:
@@ -85,12 +85,30 @@ bash install.sh
 cd ../../../../
 ```
 
-### load the GTFS and OSM files listed in config/app.ini
+### download the GTFS and OSM files listed in config/app.ini
 ```
 bin/load_data -ini config/app.ini
 
-# put it in the database
+#  1.  update GTFS feeds in cache
+#  2.  update OSM data in cache
+#  3.  update SUM data in cache
+
+# load OTP and gtfsdb
 bin/load_all -ini config/app.ini
+
+# load gtfsdb
+bin/load_db -ini config/app.ini
+
+#  3a. load gtfsdb
+#  3b. export gtfsdb to production
+
+#  4a. build OTP graph
+#  4b. test OTP graph
+#  4c. deploy graphs that pass tests to production servers
+
+#  5. load SOLR with cached datad
+
+
 ```
 
 ## Generate the Graph.obj to introduce to the shaded otp.jar file

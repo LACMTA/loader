@@ -20,8 +20,10 @@ def load_data():
           1.  update GTFS feeds in cache
           2.  update OSM data in cache
           3.  update SUM data in cache
+          4.  load gtfsdb
     """
-    force_update=object_utils.is_force_update()
+    # force_update=object_utils.is_force_update()
+    force_update=True
 
     log.info("step 1: cache latest gtfs feeds")
     gtfs = GtfsCache()
@@ -33,6 +35,23 @@ def load_data():
 
     log.info("step 3: download SUM data (BIKETOWN)")
     sum_update = SumCache.load
+
+    log.info("step 4: load gtfsdb")
+    db = GtfsdbLoader()
+    db.check_db(force_update=force_update)
+
+def load_db():
+    """ just download data
+
+        does the following:
+          4.  load gtfsdb
+    """
+    # force_update=object_utils.is_force_update()
+    force_update=True
+
+    log.info("step 4: load gtfsdb")
+    db = GtfsdbLoader()
+    db.check_db(force_update=force_update)
 
 
 def load_all():
@@ -47,7 +66,8 @@ def load_all():
 
           5. load SOLR with cached datad
     '''
-    force_update=object_utils.is_force_update()
+    # force_update=object_utils.is_force_update()
+    force_update=True
 
     load_data()
 
@@ -72,12 +92,3 @@ def deploy_all():
 
     '''
     print "@TODO @TODO @TODO @TODO @TODO"
-
-
-
-
-
-
-
-
-
