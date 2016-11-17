@@ -31,16 +31,17 @@ bin/pip install zc.buildout
 buildout install prod
 ```
 
-## set up the gtfsdb and utils repositories
+## Set up the OTT projects gtfsdb and utils before loading data
+start inside the loader folder
 
 ```
-# buildout the gtfsdb
-cd ../gtfsdb/
+cd ../gtfsdb
 buildout install prod postgresql
 
-# then buildout the utils
-cd ../utils/
+cd ../utils
 buildout install prod
+
+cd ../loader
 ```
 
 ### Install the PostGIS extensions.
@@ -57,18 +58,6 @@ CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 ```
 
-## Set up the OTT projects gtfsdb and utils before loading data
-start inside the loader folder
-
-```
-cd ../gtfsdb
-buildout install prod postgresql
-
-cd ../utils
-buildout install prod
-
-cd ../loader
-```
 
 ## Build requirements
 
