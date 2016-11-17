@@ -8,8 +8,23 @@ The loader project contains multiple utilities to load GTFS, OSM and OTP data in
 5. [solr](ott/loader/solr/README.md), which pulls geocoder data from the PostgreSQL database
 
 ## Let's install the Metro GTFS loader for the Open Trip Planner
-Start by installing python 2.7, PostgreSQL 9.1+, PostGIS v2.2+, and git on your system. Then:
+Start by installing python 2.7, PostgreSQL 9.1+, PostGIS v2.2+, and git on your system.
 
+## This was installed on AWS T2.large EC2 instance.
+Ubuntu 16.04 installed on 16GB of SSD.
+
+```
+# get PostGIS & PostgreSQL installed
+sudo apt install -y postgis postgresql-9.5-postgis-2.2 libpq-dev
+
+# Python goodies
+sudo  virtualenv python-zc.buildout python-setuptools python-psycopg2 python-pip
+
+# this will save you some trouble later
+sudo apt install osmosis
+```
+
+Then:
 
 ### clone three repositories
 ```
@@ -21,7 +36,7 @@ git clone https://github.com/LACMTA/loader.git
 ### set up virtualenv but DON'T ACTIVATE
 
 ```
-cd loader
+cd loader ;
 virtualenv .
 ```
 
@@ -32,7 +47,6 @@ buildout install prod
 ```
 
 ## Set up the OTT projects gtfsdb and utils before loading data
-start inside the loader folder
 
 ```
 cd ../gtfsdb
@@ -49,13 +63,12 @@ cd ../loader
 Create the `ott` table and an ott user:
 
 ```
-CREATE DATABASE ott;
-CREATE USER ott WITH PASSWORD 'ott';
-GRANT ALL PRIVILEGES ON DATABASE "ott" to ott;
+# this will prompt you for a database password. use 'ott'
+sudo -u postgres createuser -P ott
+sudo -u postgres createdb -O ott ott
 
-# \connect ott;
-CREATE EXTENSION postgis;
-CREATE EXTENSION postgis_topology;
+sudo -u postgres psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" ott
+
 ```
 
 
@@ -76,6 +89,17 @@ bash install.sh
 cd ../../../../
 ```
 
+#### You may need to make the osm file manually
+
+```
+cd ott/loader/osm/cache ;
+osmosis --read-pbf file=los-angeles_california.pbf --write-xml los-angeles_california.osm
+
+# wait a verrry long time then
+cd ../../../../
+```
+
+
 ### use the scripts to download the GTFS and OSM files listed in config/app.ini
 
 #### load GTFS schedules, OSM address data, and Bikeshare locations
@@ -83,6 +107,7 @@ cd ../../../../
 ```
 bin/load_data -ini config/app.ini
 ```
+
 
 #### load the schedule data into the database
 
