@@ -40,7 +40,15 @@ buildout install prod
 
 ```
 
-Make sure that you have PostgreSQL (>v9.1) installed locally with the PostGIS extensions (>v2.2).
+## verify that you have OTP v1.0
+
+```
+wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
+  -O ott/loader/otp/graph/prod/otp.jar
+```
+
+
+## Make sure that you have PostgreSQL (>v9.1) installed locally with the PostGIS extensions (>v2.2).
 
 Create the `ott` table and an ott user:
 
@@ -168,12 +176,6 @@ scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
 
 ```
 
-## verify that you have the v1.0
-
-```
-wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
-  -O ott/loader/otp/graph/prod/otp.jar
-```
 
 ## rebuild the graph GTFS data arrives
 
