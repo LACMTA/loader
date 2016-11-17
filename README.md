@@ -29,6 +29,17 @@ buildout install prod
 
 ## set up the gtfsdb and utils repositories
 
+```
+# buildout the gtfsdb
+cd ../gtfsdb/
+buildout install prod postgresql
+
+# then buildout the utils
+cd ../utils/
+buildout install prod
+
+```
+
 Make sure that you have PostgreSQL (>v9.1) installed locally with the PostGIS extensions (>v2.2).
 
 Create the `ott` table and an ott user:
@@ -185,8 +196,3 @@ run:
   1. bin/test ... this cmd will run loader's unit tests (see: http://docs.zope.org/zope.testrunner/#some-useful-command-line-options-to-get-you-started)
   1. see individual project README's above to see different app runs
   1. and check out the bin/ generated after buildout is run (those binaries are created via buildout & setup.py)
-
-
-
-
- psql -f ott/loader/gtfsdb/create_postgis_db.psql ott -f ott/loader/gtfsdb/create_postgis_db.psql

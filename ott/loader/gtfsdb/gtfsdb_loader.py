@@ -27,7 +27,7 @@ class GtfsdbLoader(CacheBase):
         self.db_url  = self.config.get('url', section='db', def_val='postgresql+psycopg2://127.0.0.1:5432/ott')
         self.is_geospatial = self.config.get_bool('is_geospatial', section='db')
 
-    def check_db(self, force_update=False):
+    def check_db(self, force_update=True):
         ''' check the local cache, and decide whether we should update or not
         '''
         reload = force_update
