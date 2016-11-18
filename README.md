@@ -141,7 +141,7 @@ java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
     --basePath ott/loader/otp \
     --server \
     --insecure \
-    --router lax \
+    --router prod \
     --autoScan \
     --autoReload
 ```
