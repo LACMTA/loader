@@ -98,7 +98,12 @@ osmosis --read-pbf file=los-angeles_california.pbf --write-xml los-angeles_calif
 # wait a verrry long time then
 cd ../../../../
 ```
+## The OTP server is very fussy about versions. Be sure that your local version matches the server. In this case OTP v1.0.0.
 
+```
+wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
+  -O ott/loader/otp/graph/prod/otp.jar
+```
 
 ### use the scripts to download the GTFS and OSM files listed in config/app.ini
 
@@ -204,13 +209,6 @@ sudo  /etc/init.d/opentripplanner restart
 scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
 
 # then on the server
-```
-
-## The OTP server is very fussy about versions. Be sure that your local version matches the server. In this case OTP v1.0.0.
-
-```
-wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
-  -O ott/loader/otp/graph/prod/otp.jar
 ```
 
 ## rebuild the graph GTFS data arrives
