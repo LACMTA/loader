@@ -18,10 +18,10 @@ Ubuntu 16.04 installed on 24GB SSD.
 sudo apt install -y postgis postgresql-9.5-postgis-2.2 libpq-dev
 
 # Python goodies
-sudo  virtualenv python-zc.buildout python-setuptools python-psycopg2 python-pip
+sudo apt install -y virtualenv python-zc.buildout python-setuptools python-psycopg2 python-pip
 
 # this will save you some trouble later
-sudo apt install osmosis
+sudo apt install -y install osmosis
 ```
 
 Then:
