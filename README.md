@@ -11,7 +11,7 @@ The loader project contains multiple utilities to load GTFS, OSM and OTP data in
 Start by installing python 2.7, PostgreSQL 9.1+, PostGIS v2.2+, and git on your system.
 
 ## This was installed on AWS T2.large EC2 instance.
-Ubuntu 16.04 installed on 16GB of SSD.
+Ubuntu 16.04 installed on 24GB SSD.
 
 ```
 # get PostGIS & PostgreSQL installed
