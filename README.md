@@ -89,15 +89,6 @@ bash install.sh
 cd ../../../../
 ```
 
-#### You may need to make the osm file manually
-
-```
-cd ott/loader/osm/cache ;
-osmosis --read-pbf file=los-angeles_california.pbf --write-xml los-angeles_california.osm
-
-# wait a verrry long time then
-cd ../../../../
-```
 ## The OTP server is very fussy about versions. Be sure that your local version matches the server. In this case OTP v1.0.0.
 
 ```
@@ -113,6 +104,15 @@ wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/ot
 bin/load_data -ini config/app.ini
 ```
 
+#### You may need to make the osm file manually
+
+```
+cd ott/loader/osm/cache ;
+osmosis --read-pbf file=los-angeles_california.pbf --write-xml los-angeles_california.osm
+
+# wait a verrry long time then
+cd ../../../../
+```
 
 #### load the schedule data into the database
 
