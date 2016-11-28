@@ -8,6 +8,5 @@ run: bin/otp_build_graph (optional: -ini <name>.ini | force_update | low_mem)
 
 grab new otp from build:
   1. cd ../loader/
-  1. ott/loader/otp/graph/call/install.sh 
-  1. ott/loader/otp/graph/prod/install.sh
-
+  1. ott/loader/otp/graph/call/install.sh
+  1. ott/loader/otp/graph/lax/install.sh
