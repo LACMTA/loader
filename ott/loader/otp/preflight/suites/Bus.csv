@@ -1,1 +1,2 @@
-Description/notes,From,To,Mode,Time,Service,Optimize,Max dist,Arrive by,Depart by,Expected output,Expected number of legs,Expected trip duration,Expected trip distance,Passes?
+Description/notes ,From,To,Mode,Time,Service,Optimize,Max dist,Arrive by,Depart by,Expected output,Expected number of legs,Expected trip duration,Expected trip distance,Passes?
+"From Union Station to 2800 Avenel","34.05523,-118.23225","34.108715,-118.26946","TRANSIT,WALK",9:20 AM,,QUICK,,,,,,,,
