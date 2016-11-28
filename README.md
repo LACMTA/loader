@@ -43,6 +43,7 @@ virtualenv .
 ### run the buildout script
 ```
 bin/pip install zc.buildout
+git pull ;
 buildout install lax
 ```
 
