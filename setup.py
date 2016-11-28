@@ -56,6 +56,7 @@ setup(
     entry_points="""
         [console_scripts]
         load_data = ott.loader.loader:load_data
+        load_db = ott.loader.loader:load_db
         load_all = ott.loader.loader:load_all
         deploy_all = ott.loader.loader:deploy_all
 
