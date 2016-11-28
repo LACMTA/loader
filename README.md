@@ -1,8 +1,5 @@
 # Metro OTP loader
-======
-
 ## forked from OpenTransitTools/loader
-
 The loader project contains multiple utilities to load GTFS, OSM and OTP data into various apps and databases. The sub projects are:
 1. [gtfs](ott/loader/gtfs/README.md), which contains routines to cache and compare gtfs feeds.
 2. [gtfsdb](ott/loader/gtfsdb/README.md), which loads gtfs files into GTFSDB
@@ -46,16 +43,18 @@ virtualenv .
 ### run the buildout script
 ```
 bin/pip install zc.buildout
-buildout install prod
+buildout install lax
 ```
 
 ## Set up the OTT projects gtfsdb and utils before loading data
 
 ```
-cd ../gtfsdb
+cd ../gtfsdb ;
+git pull ;
 buildout install prod postgresql
 
-cd ../utils
+cd ../utils ;
+git pull ;
 buildout install prod
 
 cd ../loader
@@ -105,7 +104,7 @@ cd ../../../../
 
 ```
 wget http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/1.0.0/otp-1.0.0-shaded.jar \
-  -O ott/loader/otp/graph/prod/otp.jar
+  -O ott/loader/otp/graph/lax/otp.jar
 ```
 
 ### use the scripts to download the GTFS and OSM files listed in config/app.ini
@@ -127,7 +126,7 @@ bin/load_db -ini config/app.ini
 #### Generate the Graph.obj to introduce to the shaded otp.jar file
 
 ```
-bin/otp_build --no_tests prod
+bin/otp_build --no_tests lax
 ```
 
 ## You now have a working Graph.obj file and you should be able to run the OTP server. Try it!
@@ -135,21 +134,21 @@ bin/otp_build --no_tests prod
 ## Introduce the graph object
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
-    --build ott/loader/otp/graph/prod \
-    --router prod \
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
+    --build ott/loader/otp/graph/lax \
+    --router lax \
     --basePath ott/loader/otp
 ```
 
 ## Run the server locally as a daemon
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
     --graphs ott/loader/otp/graph \
     --basePath ott/loader/otp \
     --server \
     --insecure \
-    --router prod \
+    --router lax \
     --autoScan \
     --autoReload
 ```
@@ -195,7 +194,7 @@ maxInterlineDistance = 200
 copy the Graph.obj to to the server:
 
 ```
-scp ott/loader/otp/graph/prod/Graph.obj 52.11.203.105:/tmp/
+scp ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/
 
 
 # then on the server
@@ -209,7 +208,7 @@ sudo  /etc/init.d/opentripplanner restart
 ## Load the places into Pelias
 
 ```
-scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
+scp ott/loader/otp/graph/lax/los-angeles_california.osm 52.11.203.105:/tmp/
 
 # then on the server
 ```
@@ -217,16 +216,16 @@ scp ott/loader/otp/graph/prod/los-angeles_california.osm 52.11.203.105:/tmp/
 ## rebuild the graph GTFS data arrives
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
-    --build ott/loader/otp/graph/prod \
-    --router prod \
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
+    --build ott/loader/otp/graph/lax \
+    --router lax \
     --basePath ott/loader/otp
 ```
 
 ## run the server locally as a daemon
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
     --graphs ott/loader/otp/graph \
     --basePath ott/loader/otp \
     --server \
@@ -240,7 +239,7 @@ java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar \
 # get the OTP version,
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/prod/otp.jar  -V
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar  -V
 ```
 
 --------------------------------------------------------------------------------
@@ -257,12 +256,12 @@ run:
 
 ```
 upstream otp {
-    server localhost:8080;
+  server localhost:8080;
 }
 
 server {
-    location / {
-        proxy_pass http://otp;
-    }
+  location / {
+    proxy_pass http://otp;
+  }
 }
 ```
