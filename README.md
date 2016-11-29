@@ -240,12 +240,12 @@ java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
 # get the OTP version,
 
 ```
-java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar  -V
+java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar  --version
 ```
 
---------------------------------------------------------------------------------
+---
 
-**original documentation below. this is untested! -doug**
+**original documentation and sketches below. this is untested! -doug**
 
 run:
 1. bin/test ... this cmd will run loader's unit tests (see: [http://docs.zope.org/zope.testrunner/#some-useful-command-line-options-to-get-you-started](http://docs.zope.org/zope.testrunner/#some-useful-command-line-options-to-get-you-started))
