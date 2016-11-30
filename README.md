@@ -98,8 +98,12 @@ cd ../../../../
 cd ott/loader/osm/cache ;
 osmosis --read-pbf file=los-angeles_california.pbf --write-xml los-angeles_california.osm
 
-# wait a verrry long time then
+# wait for the process to complete, then
 cd ../../../../
+
+# and to save 6.0Gb disk space:
+rm ott/loader/otp/graph/lax/los-angeles_california.osm ;
+ln -s ott/loader/osm/cache/los-angeles_california.osm ott/loader/otp/graph/lax/los-angeles_california.osm
 ```
 ## The OTP server is very fussy about versions. Be sure that your local version matches the server. In this case OTP v1.0.0.
 
