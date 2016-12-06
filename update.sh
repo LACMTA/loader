@@ -4,6 +4,7 @@
 # June 2016
 #
 
+# set some variables
 link=false
 if [[ $1 == "link" ]]; then
   link=true
@@ -11,7 +12,7 @@ fi
 
 start=$SECONDS
 
-# print a log a message
+# function to print a log a message
 log ()
 {
   echo "--------------------------------------"
