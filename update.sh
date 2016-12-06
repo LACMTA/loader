@@ -140,4 +140,5 @@ log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 
 # how long did that take?
 duration=$(( SECONDS - start ))
-log "Schedule update took $duration seconds"
+mins=$((duration/60))
+log "Schedule update took $mins minutes"
