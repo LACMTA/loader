@@ -137,6 +137,7 @@ bin/otp_build --no_tests lax
 ## You now have a working Graph.obj file and you should be able to run the OTP server. Try it!
 
 ## Introduce the graph object
+# *You don't need to do this if you followed the steps above!*
 
 ```
 java -Xmx2G -jar ott/loader/otp/graph/lax/otp.jar \
