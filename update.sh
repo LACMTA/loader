@@ -138,6 +138,9 @@ bin/otp_build --no_tests lax  ;
 
 log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 
+# copy the file to the otp server
+scp ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/
+
 # how long did that take?
 duration=$(( SECONDS - start ))
 mins=$((duration/60))
