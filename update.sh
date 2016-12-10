@@ -1,8 +1,11 @@
 #
 # loader update
 # will go from buildout to grabbing proper otp.jar files
-# June 2016
+# rewritten December 2016
 #
+# install this in your crontab
+# # run the loader each day at 2am and send the log to ~/loader.log
+# 0 2 * * *  bash ~/update.sh link > ~/loader.log 2>&1
 
 # set some variables
 link=false
@@ -140,6 +143,26 @@ log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 
 # copy the file to the otp server
 scp ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/
+
+
+# now, install a script called installgraph.sh on the remote server
+# to install the new Graph.obj file
+
+# #!/bin/bash
+#
+# if [[ '/tmp/Graph.obj' -nt '/home/otp/graphs/lax/Graph.obj' ]]; then
+#   mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
+#   chown otp:otp /tmp/Graph.obj ;
+#   mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
+#   /etc/init.d/opentripplanner restart ;
+#   echo "Time: $(date -Iseconds) new Graph.obj file installed"
+# else
+#   echo "Time: $(date -Iseconds) /tmp/Graph.obj file older or doesn't exist"
+# fi
+#
+# and an entry in root's crontab
+# 0 4 * * *  bash ~/installgraph.sh >> ~/installgraph.log 2>&1
+
 
 # how long did that take?
 duration=$(( SECONDS - start ))
