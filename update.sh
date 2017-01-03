@@ -160,9 +160,9 @@ scp ott/loader/otp/graph/lax/Graph.obj 52.89.200.110:/tmp/
 # else
 #   echo "Time: $(date -Iseconds) /tmp/Graph.obj file older or doesn't exist"
 # fi
-#
+
 # and an entry in root's crontab
-# 0 4 * * *  bash ~/installgraph.sh >> ~/installgraph.log 2>&1
+# 0 11 * * * bash /opt/OpenTripPlanner/installgraph.sh >> /opt/OpenTripPlanner/installgraph.log 2>&1
 
 
 # how long did that take?
