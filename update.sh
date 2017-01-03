@@ -141,9 +141,10 @@ bin/otp_build --no_tests lax  ;
 
 log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 
-# copy the file to the otp server
+# copy the file to the otp servers
+# NOTE -- you need add a mechanism to update these IP addresses!
 scp ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/
-
+scp ott/loader/otp/graph/lax/Graph.obj 52.89.200.110:/tmp/
 
 # now, install a script called installgraph.sh on the remote server
 # to install the new Graph.obj file
