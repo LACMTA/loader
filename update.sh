@@ -142,27 +142,29 @@ bin/otp_build --no_tests lax  ;
 log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 
 # copy the file to the otp servers
-# NOTE -- you need add a mechanism to update these IP addresses!
-scp ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/
-scp ott/loader/otp/graph/lax/Graph.obj 52.89.200.110:/tmp/
+# NOTE: you need add a mechanism to update these IP addresses!
+# NOTE: you need the public keys from the remote machines!
+scp loader/ott/loader/otp/graph/lax/Graph.obj 52.11.203.105:/tmp/Graph.obj
+scp loader/ott/loader/otp/graph/lax/Graph.obj 52.89.200.110:/tmp/Graph.obj
 
-# now, install a script called installgraph.sh on the remote server
-# to install the new Graph.obj file
+# do some remote voodoo to move the Graph.obj files into place
+ssh -t 52.11.203.105 << EOF
+  sudo -u root mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
+  sudo -u root chown otp:otp /tmp/Graph.obj ;
+  sudo -u root mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
+  sudo -u root ls -l /home/otp/graphs/lax/Graph.obj ;
+  sudo -u root /etc/init.d/opentripplanner stop ;
+  sudo -u root /etc/init.d/opentripplanner start ;
+EOF
 
-# #!/bin/bash
-#
-# if [[ '/tmp/Graph.obj' -nt '/home/otp/graphs/lax/Graph.obj' ]]; then
-#   mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
-#   chown otp:otp /tmp/Graph.obj ;
-#   mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
-#   /etc/init.d/opentripplanner restart ;
-#   echo "Time: $(date -Iseconds) new Graph.obj file installed"
-# else
-#   echo "Time: $(date -Iseconds) /tmp/Graph.obj file older or doesn't exist"
-# fi
-
-# and an entry in root's crontab
-# 0 11 * * * bash /opt/OpenTripPlanner/installgraph.sh >> /opt/OpenTripPlanner/installgraph.log 2>&1
+ssh -t 52.89.200.110 << EOF
+  sudo -u root mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
+  sudo -u root chown otp:otp /tmp/Graph.obj ;
+  sudo -u root mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
+  sudo -u root ls -l /home/otp/graphs/lax/Graph.obj ;
+  sudo -u root /etc/init.d/opentripplanner stop ;
+  sudo -u root /etc/init.d/opentripplanner start ;
+EOF
 
 
 # how long did that take?
