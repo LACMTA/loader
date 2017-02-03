@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # loader update
 # will go from buildout to grabbing proper otp.jar files
@@ -38,6 +39,11 @@ log ()
   echo "--------------------------------------"
 }
 
+# update the local GTFS files
+cd /var/www/html/ ;
+git clone https://gitlab.com/LACMTA/gtfs_lax.git ;
+cd /var/www/html/gtfs_lax ;
+git pull ;
 
 if "$link"; then
   log "Great! we will link the big files."
