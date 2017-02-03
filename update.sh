@@ -88,11 +88,11 @@ log "loader installed"
 # install OSMOSIS if necessary
 # OSMOSIS is the OpenStreetMap .pbf to .osm converter and db loader
 cd ;
-thefile="loader/ott/loader/osm/osmosis/bin/osmosis" ;
-if [ -f "$thefile" ];
+OSMBIN="$LHOME/ott/loader/osm/osmosis/bin/osmosis" ;
+if [ -f "$OSMBIN" ];
 then
     cd ;
-    cd loader/ott/loader/osm/osmosis/
+    cd $LHOME/ott/loader/osm/osmosis/
     bash install.sh
     cd -
 fi
@@ -105,35 +105,23 @@ wget https://s3.amazonaws.com/metro-extracts.mapzen.com/los-angeles_california.o
   -O loader/ott/loader/otp/graph/lax/los-angeles_california.pbf ;
 
 cd $BHOME ;
-thefile="loader/ott/loader/otp/graph/lax/los-angeles_california.pbf"
-if [ -f "$thefile" ];
+PBFILE="loader/ott/loader/otp/graph/lax/los-angeles_california.pbf"
+if [ -f "$PBFILE" ];
 then
-  log "$thefile received"
+  log "$PBFILE received"
 fi
 
 # remove the old OSM file
 cd $BHOME ;
-osmfile="loader/ott/loader/otp/graph/lax/los-angeles_california.osm"
-if [ -f "$osmfile" ];
+OSMFILE="$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm"
+if [ -f "$OSMFILE" ];
 then
-    rm "$osmfile" ;
+    rm "$OSMFILE" ;
 fi
 
 cd $BHOME/ott/loader/otp/graph/lax/ ;
 osmosis --read-pbf file=los-angeles_california.pbf --write-xml \
   los-angeles_california.osm
-
-# and to save 6.0Gb disk space:
-cd ;
-if "$link"; then
-  ln -s "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" \
-    "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" ;
-else
-    # fpurcell's code
-    cp ../cache/osm/*.* ott/loader/osm/cache/
-    sleep 5
-    touch ott/loader/osm/cache/*.osm
-fi
 
 log "$osmfile file is ready"
 
