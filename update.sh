@@ -26,6 +26,11 @@ LHOME="$BHOME/loader"
 UHOME="$BHOME/utils"
 GHOME="$BHOME/gtfsdb"
 
+OSMBIN="$LHOME/ott/loader/osm/osmosis/bin/osmosis" ;
+PBFILE="$LHOME/ott/loader/otp/graph/lax/los-angeles_california.pbf"
+OSMFILE="$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm"
+JARFILE="$LHOME/ott/loader/otp/graph/lax/otp.jar"
+
 PROD_OTP_1="52.11.203.105"
 PROD_OTP_2="35.162.45.167"
 STG_OTP_1="52.89.200.110"
@@ -44,6 +49,10 @@ cd /var/www/html/ ;
 git clone https://gitlab.com/LACMTA/gtfs_lax.git ;
 cd /var/www/html/gtfs_lax ;
 git pull ;
+# zip the agency schedule data
+cd /var/www/html/gtfs_lax ; rm *.zip
+find . -type d -maxdepth 1 -exec zip -r {}.zip {} \;
+
 
 if "$link"; then
   log "Great! we will link the big files."
@@ -52,7 +61,7 @@ else
 fi
 
 # upgrade the helper code
-cd utils ; git pull
+cd $UHOME ; git pull
 
 # make sure we have what's required
 pip install setuptools==33.1.1 ;
@@ -87,48 +96,47 @@ log "loader installed"
 
 # install OSMOSIS if necessary
 # OSMOSIS is the OpenStreetMap .pbf to .osm converter and db loader
-cd ;
-OSMBIN="$LHOME/ott/loader/osm/osmosis/bin/osmosis" ;
 if [ -f "$OSMBIN" ];
 then
-    cd ;
     cd $LHOME/ott/loader/osm/osmosis/
     bash install.sh
-    cd -
 fi
 
 log "Osmosis installed"
 
 # install the protobuffer file and generate the OSM XML
-cd ;
-wget https://s3.amazonaws.com/metro-extracts.mapzen.com/los-angeles_california.osm.pbf \
-  -O loader/ott/loader/otp/graph/lax/los-angeles_california.pbf ;
+wget https://s3.amazonaws.com/metro-extracts.mapzen.com/los-angeles_california.osm.pbf -O $PBFILE ;
 
-cd $BHOME ;
-PBFILE="loader/ott/loader/otp/graph/lax/los-angeles_california.pbf"
 if [ -f "$PBFILE" ];
 then
   log "$PBFILE received"
 fi
 
 # remove the old OSM file
-cd $BHOME ;
-OSMFILE="$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm"
 if [ -f "$OSMFILE" ];
 then
     rm "$OSMFILE" ;
 fi
 
-cd $BHOME/ott/loader/otp/graph/lax/ ;
-osmosis --read-pbf file=los-angeles_california.pbf --write-xml \
-  los-angeles_california.osm
+cd $LHOME/ott/loader/otp/graph/lax/ ;
+osmosis --read-pbf file=$PBFILE --write-xml $OSMFILE
+
+# and to save 6.0Gb disk space:
+cd $BHOME ;
+if "$link"; then
+  ln -s "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" ;
+else
+    # fpurcell's code
+    cp ../cache/osm/*.* ott/loader/osm/cache/
+    sleep 5
+    touch ott/loader/osm/cache/*.osm
+fi
 
 log "$osmfile file is ready"
 
-# get the appropriate otp.jr file
+# get the appropriate otp.jar file
 # put it in place
 cd $BHOME ;
-JARFILE="$LHOME/ott/loader/otp/graph/lax/otp.jar"
 if [ -f "$JARFILE" ];
 then
     rm "$JARFILE" ;
@@ -142,7 +150,7 @@ then
   log "otp.jar file installed"
   # print the otp headers
   cd $BHOME ;
-  java -Xmx2G -jar loader/ott/loader/otp/graph/lax/otp.jar  --version
+  java -Xmx2G -jar $JARFILE  --version
 fi
 
 log "let's grab the schedules and load them into the database"
@@ -162,9 +170,9 @@ log "ott/loader/otp/graph/lax/Graph.obj file is ready"
 # copy the file to the otp servers
 # NOTE: you need add a mechanism to update these IP addresses!
 # NOTE: you need the public keys from the remote machines!
-scp loader/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_1:/tmp/Graph.obj"
-scp loader/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_2:/tmp/Graph.obj"
-scp loader/ott/loader/otp/graph/lax/Graph.obj "$STG_OTP_1:/tmp/Graph.obj"
+scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_1:/tmp/Graph.obj"
+scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_2:/tmp/Graph.obj"
+scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$STG_OTP_1:/tmp/Graph.obj"
 
 # do some remote voodoo to move the Graph.obj files into place
 ssh -t $PROD_OTP_1 << EOF
