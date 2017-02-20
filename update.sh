@@ -4,6 +4,8 @@
 # will go from buildout to grabbing proper otp.jar files
 # rewritten February 2017
 #
+# needs a lot of room. It completes on a 32GB EC2.
+#
 # install this in your crontab
 # # run the loader each day at 2am and send the log to ~/loader.log
 # 0 2 * * *  bash ~/update.sh link > ~/loader.log 2>&1
@@ -44,46 +46,43 @@ log ()
   echo "--------------------------------------"
 }
 
-# update the local GTFS files
-cd /var/www/html/ ;
-git clone https://gitlab.com/LACMTA/gtfs_lax.git ;
-cd /var/www/html/gtfs_lax ;
-git pull ;
-# zip the agency schedule data
-cd /var/www/html/gtfs_lax ; rm *.zip
-find . -type d -maxdepth 1 -exec zip -r {}.zip {} \;
-
-
 if "$link"; then
   log "Great! we will link the big files."
 else
   log "Redundant files ahead! consider this instead\nbash update.sh link"
 fi
 
-# upgrade the helper code
-cd $UHOME ; git pull
-
 # make sure we have what's required
-pip install setuptools==33.1.1 ;
-pip install pyparsing  ;
-pip install packaging ;
-pip install zc.buildout ;
+sudo apt install -y libpq-dev libssl-dev gcc postgresql postgresql-contrib postgresql-client python-pip virtualenv ;
+sudo apt-get install default-jre ;
 
-env buildout install prod
+sudo pip install setuptools==33.1.1 ;
+sudo pip install pyparsing  ;
+sudo pip install packaging ;
+sudo pip install zc.buildout ;
+sudo pip install --upgrade pip ;
 
-cd $GHOME ; git pull
-
-
-env buildout install prod postgresql
-cd $BHOME
-
-log "OTT utils and gtfsdb installed"
+# create the db user and tables for the loader
+sudo -u postgres psql -c "CREATE USER ott WITH PASSWORD 'ott' ;"
+sudo -u postgres -c "CREATE DATABASE ott WITH OWNER ott ;"
 
 # destroy the current loader
 rm -Rf $LHOME
 
-# checkout the latest loader code
-git clone https://github.com/LACMTA/loader.git
+# checkout the latest loader code adn utils
+git clone https://github.com/LACMTA/loader.git ;
+git clone https://github.com/OpenTransitTools/utils.git ;
+git clone https://github.com/OpenTransitTools/gtfsdb ;
+
+# upgrade the helper code
+cd $UHOME ; git pull
+env buildout install prod
+
+cd $GHOME ; git pull
+env buildout install prod postgresql
+
+cd $BHOME
+log "OTT utils and gtfsdb installed"
 
 # set up the virtualenv
 cd $LHOME ;
@@ -96,11 +95,9 @@ log "loader installed"
 
 # install OSMOSIS if necessary
 # OSMOSIS is the OpenStreetMap .pbf to .osm converter and db loader
-if [ -f "$OSMBIN" ];
-then
-    cd $LHOME/ott/loader/osm/osmosis/
-    bash install.sh
-fi
+cd $LHOME/ott/loader/osm/osmosis/ ;
+bash install.sh
+sudo ln -s $LHOME/ott/loader/osm/osmosis/bin/osmosis /usr/bin/ ;
 
 log "Osmosis installed"
 
@@ -119,12 +116,15 @@ then
 fi
 
 cd $LHOME/ott/loader/otp/graph/lax/ ;
-osmosis --read-pbf file=$PBFILE --write-xml $OSMFILE
+# either generate the OSM file or download the one from Mapzen
+# osmosis --read-pbf file=$PBFILE --write-xml $OSMFILE
+wget https://s3.amazonaws.com/metro-extracts.mapzen.com/los-angeles_california.osm.bz2 -O $OSMFILE.bz2 ;
+bunzip2 $OSMFILE.bz2 ;
 
 # and to save 6.0Gb disk space:
 cd $BHOME ;
 if "$link"; then
-  ln -s "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" ;
+  ln -s "$OSMFILE" "$LHOME/ott/loader/otp/graph/lax/los-angeles_california.osm" ;
 else
     # fpurcell's code
     cp ../cache/osm/*.* ott/loader/osm/cache/
@@ -132,7 +132,7 @@ else
     touch ott/loader/osm/cache/*.osm
 fi
 
-log "$osmfile file is ready"
+log "$OSMFILE file is ready"
 
 # get the appropriate otp.jar file
 # put it in place
@@ -156,6 +156,7 @@ fi
 log "let's grab the schedules and load them into the database"
 
 # load GTFS schedules, OSM address data, and Bikeshare locations
+# NOTE this runs the osmosis pieline and recreates the OSM file
 cd $LHOME ;
 bin/load_data -ini config/app.ini ;
 
@@ -166,41 +167,6 @@ cd $LHOME ;
 bin/otp_build --no_tests lax  ;
 
 log "ott/loader/otp/graph/lax/Graph.obj file is ready"
-
-# copy the file to the otp servers
-# NOTE: you need add a mechanism to update these IP addresses!
-# NOTE: you need the public keys from the remote machines!
-scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_1:/tmp/Graph.obj"
-scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$PROD_OTP_2:/tmp/Graph.obj"
-scp $LHOME/ott/loader/otp/graph/lax/Graph.obj "$STG_OTP_1:/tmp/Graph.obj"
-
-# do some remote voodoo to move the Graph.obj files into place
-ssh -t $PROD_OTP_1 << EOF
-  sudo -u root mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
-  sudo -u root chown otp:otp /tmp/Graph.obj ;
-  sudo -u root mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root ls -l /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root /etc/init.d/opentripplanner stop ;
-  sudo -u root /etc/init.d/opentripplanner start ;
-EOF
-
-ssh -t $PROD_OTP_2 << EOF
-  sudo -u root mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
-  sudo -u root chown otp:otp /tmp/Graph.obj ;
-  sudo -u root mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root ls -l /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root /etc/init.d/opentripplanner stop ;
-  sudo -u root /etc/init.d/opentripplanner start ;
-EOF
-
-ssh -t $STG_OTP_1 << EOF
-  sudo -u root mv /home/otp/graphs/lax/Graph.obj /tmp/Graph.obj.old ;
-  sudo -u root chown otp:otp /tmp/Graph.obj ;
-  sudo -u root mv /tmp/Graph.obj /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root ls -l /home/otp/graphs/lax/Graph.obj ;
-  sudo -u root /etc/init.d/opentripplanner stop ;
-  sudo -u root /etc/init.d/opentripplanner start ;
-EOF
 
 
 # how long did that take?
